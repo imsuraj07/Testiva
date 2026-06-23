@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html th:replace="~{Admin/Adminbase::layout(~{::main})}">
+<body>
+    <main class="container">
+        <div class="card shadow-lg w-75 mx-auto mt-4">
+            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Edit Test</h4>
+                <a th:href="@{/Admin/ScheduleTest}" class="btn btn-outline-dark btn-sm">
+                    <i class="bi bi-arrow-left"></i> Back to Manage Tests
+                </a>
+            </div>
+            <div class="card-body">
+
+                <!-- Flash Message -->
+                <div th:if="${msg}" class="alert alert-info alert-dismissible fade show" role="alert">
+                    <span th:text="${msg}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <form th:action="@{/Admin/EditTest}" th:object="${testInfo}" method="post">
+                    <!-- Hidden ID fields -->
+                    <input type="hidden" th:field="*{id}">
+
+                    <!-- Row 1: Test Name + Read-only Test ID -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="testName" class="form-label fw-bold">Test Name</label>
+                            <input type="text" id="testName" th:field="*{testName}" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Test ID <span class="text-muted fw-normal">(auto-generated, read-only)</span></label>
+                            <input type="text" th:value="*{testId}" class="form-control bg-light" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Course + Branch -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="course" class="form-label fw-bold">Course</label>
+                            <select id="course" th:field="*{course}" class="form-control" required>
+                                <option value="">--Select Course--</option>
+                                <option value="B.Tech">B.Tech</option>
+                                <option value="M.Tech">M.Tech</option>
+                                <option value="BCA">BCA</option>
+                                <option value="MCA">MCA</option>
+                                <option value="Diploma">Diploma</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="branch" class="form-label fw-bold">Branch</label>
+                            <select id="branch" th:field="*{branch}" class="form-control" required>
+                                <option value="">--Select Branch--</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Electrical">Electrical</option>
+                                <option value="Electronics">Electronics</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Year + Number of Questions -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="year" class="form-label fw-bold">Year</label>
+                            <select id="year" th:field="*{year}" class="form-control" required>
+                                <option value="">--Select Year--</option>
+                                <option value="First Year">First Year</option>
+                                <option value="Second Year">Second Year</option>
+                                <option value="Third Year">Third Year</option>
+                                <option value="Fourth Year">Fourth Year</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="numberOfQuestions" class="form-label fw-bold">Number of Questions</label>
+                            <input type="number" id="numberOfQuestions" th:field="*{numberOfQuestions}" class="form-control" min="1" required>
+                        </div>
+                    </div>
+
+                    <!-- Row 4: Duration (Minutes) + Start Time -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="testDuration" class="form-label fw-bold">Test Duration (Minutes)</label>
+                            <input type="number" id="testDuration" th:field="*{testDuration}" class="form-control" min="1" placeholder="e.g. 30, 60, 90" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="startTime" class="form-label fw-bold">Start Time</label>
+                            <input type="datetime-local" id="startTime" th:field="*{startTime}" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <!-- Row 5: Status -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="status" class="form-label fw-bold">Status</label>
+                            <select id="status" th:field="*{status}" class="form-control" required>
+                                <option value="Scheduled">Scheduled</option>
+                                <option value="Reminder_Sent">Reminder Sent</option>
+                                <option value="Active">Active</option>
+                                <option value="Test_Over">Test Over</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-warning px-5 fw-bold">
+                            <i class="bi bi-save"></i> Update Test
+                        </button>
+                        <a th:href="@{/Admin/ScheduleTest}" class="btn btn-secondary px-4">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

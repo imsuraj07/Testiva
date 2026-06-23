@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html th:replace="~{Admin/Adminbase::layout(~{::main})}">
+<body>
+    <main class="container">
+
+        <!-- Flash Message -->
+        <div th:if="${msg}" class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+            <span th:text="${msg}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card shadow-lg mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4><i class="bi bi-cloud-upload me-2"></i>Upload Questions via CSV</h4>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/Admin/UploadQuestion}"
+                      th:object="${questionBank}"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    <div class="row mb-3">
+                        <!-- Test Selection -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Select Test:</label>
+                            <select name="testId" class="form-select" required>
+                                <option value="" disabled selected>-- Select Test --</option>
+                                <option th:each="t : ${testList}"
+                                        th:value="${t.id}"
+                                        th:text="${t.testName + ' (' + t.testId + ')'}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- CSV File Upload -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Upload CSV File:</label>
+                            <input type="file" name="questionFile" accept=".csv" class="form-control" required>
+                            <small class="text-muted">CSV format: question, optionA, optionB, optionC, optionD, correctAnswer</small>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <!-- Course -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Course:</label>
+                            <select th:field="*{course}" class="form-select" required>
+                                <option value="" disabled selected>-- Select Course --</option>
+                                <option value="B.Tech">B.Tech</option>
+                                <option value="M.Tech">M.Tech</option>
+                                <option value="BCA">BCA</option>
+                                <option value="MCA">MCA</option>
+                                <option value="Diploma">Diploma</option>
+                            </select>
+                        </div>
+
+                        <!-- Branch -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Branch:</label>
+                            <select th:field="*{branch}" class="form-select" required>
+                                <option value="" disabled selected>-- Select Branch --</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Electrical">Electrical</option>
+                                <option value="Electronics">Electronics</option>
+                            </select>
+                        </div>
+
+                        <!-- Year -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Year:</label>
+                            <select th:field="*{year}" class="form-select" required>
+                                <option value="" disabled selected>-- Select Year --</option>
+                                <option value="First Year">First Year</option>
+                                <option value="Second Year">Second Year</option>
+                                <option value="Third Year">Third Year</option>
+                                <option value="Fourth Year">Fourth Year</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-upload me-1"></i> Upload Questions
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- CSV Format Guide -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>CSV Format Guide</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-2">Your CSV file must have exactly <strong>6 columns</strong> in this order (no header row needed beyond the first):</p>
+                <table class="table table-bordered table-sm">
+                    <thead class="table-secondary">
+                        <tr>
+                            <th>Column 1</th>
+                            <th>Column 2</th>
+                            <th>Column 3</th>
+                            <th>Column 4</th>
+                            <th>Column 5</th>
+                            <th>Column 6</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Question Text</td>
+                            <td>Option A</td>
+                            <td>Option B</td>
+                            <td>Option C</td>
+                            <td>Option D</td>
+                            <td>Correct (A/B/C/D)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="text-muted small">Example row: <code>What is Java?,Object-oriented,Scripting,Markup,Database,A</code></p>
+            </div>
+        </div>
+
+    </main>
+</body>
+</html>

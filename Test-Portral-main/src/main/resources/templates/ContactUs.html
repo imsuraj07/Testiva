@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::main})}">
+<body>
+	<main class="container py-5">
+
+		<!-- Section Title -->
+		<div class="text-center mb-5">
+			<h2 class="fw-bold text-primary">Contact Us</h2>
+			<p class="text-muted fs-5">Have questions about the test portal?
+				We're here to help.</p>
+			<hr class="w-25 mx-auto border-primary">
+		</div>
+
+		<div class="row g-5 align-items-start">
+
+			<!-- Enquiry Form -->
+			<div class="col-lg-7">
+				<div class="card border-0 shadow rounded-4">
+					<div class="card-header bg-primary text-white rounded-top-4">
+						<h5 class="mb-0 py-2">
+							<i class="bi bi-envelope-paper-heart me-2"></i>Submit Your
+							Enquiry
+						</h5>
+					</div>
+					<div class="card-body p-4">
+						<form th:action="@{/ContactUs}" method="post" th:object="${enquiry}">
+							<div class="row g-3">
+								<div class="col-md-6">
+									<label class="form-label">Full Name <span
+										class="text-danger">*</span></label> <input type="text"
+										class="form-control" th:field="*{name}" placeholder="Ex: Manish Yadav"
+										required>
+								</div>
+
+								<div class="col-md-6">
+									<label class="form-label">Mobile Number <span
+										class="text-danger">*</span></label> <input type="text"
+										class="form-control" th:field="*{contactno}" maxlength="10"
+										placeholder="9876543210" required>
+								</div>
+
+								<div class="col-md-6">
+									<label class="form-label">Email <span
+										class="text-danger">*</span></label> <input type="email"
+										class="form-control" th:field="*{email}"
+										placeholder="you@example.com" required>
+								</div>
+
+								<div class="col-md-6">
+									<label class="form-label">Gender <span
+										class="text-danger">*</span></label> <select class="form-select"
+										th:field="*{gender}" required>
+										<option value="" disabled selected>Select Gender</option>
+										<option value="MALE">Male</option>
+										<option value="FEMALE">Female</option>
+										<option value="OTHER">Other</option>
+									</select>
+								</div>
+
+								<div class="col-12">
+									<label class="form-label">Address</label>
+									<textarea class="form-control" rows="2" th:field="*{address}"
+										placeholder="Your address..."></textarea>
+								</div>
+								
+								<div class="col-12">
+									<label class="form-label">Subject <span
+										class="text-danger">*</span></label> <input type="text"
+										class="form-control" th:field="*{subject}"
+										placeholder="E.g. Test Result, Account Issue, Portal Access"
+										required>
+								</div>
+
+								<div class="col-12">
+									<label class="form-label">Message <span
+										class="text-danger">*</span></label>
+									<textarea class="form-control" rows="4"
+										th:field="*{enquiryText}"
+										placeholder="Write your query or issue in detail..." required></textarea>
+								</div>
+							</div>
+
+							<div class="mt-4 text-end">
+								<button type="submit" class="btn btn-primary px-4 py-2">
+									<i class="bi bi-send-fill me-1"></i> Send Enquiry
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<!-- Contact Info Sidebar -->
+			<div class="col-lg-5">
+				<div class="card border-0 shadow rounded-4">
+					<div class="card-body p-4">
+						<h5 class="fw-bold mb-3">Testiva Support</h5>
+						<p class="text-muted">For technical help or feedback regarding
+							the Test Portal, feel free to reach out:</p>
+
+						<p class="mb-2">
+							<i class="bi bi-telephone-fill text-primary me-2"></i> <strong>+91
+								98765 43210</strong>
+						</p>
+						<p class="mb-2">
+							<i class="bi bi-envelope-fill text-success me-2"></i>
+							support@testiva.edu.in
+						</p>
+						<p class="mb-2">
+							<i class="bi bi-geo-alt-fill text-danger me-2"></i> Sector-21,
+							Pune, Maharashtra
+						</p>
+
+						<hr>
+						<h6 class="fw-bold">Office Hours</h6>
+						<ul class="list-unstyled">
+							<li>Mon - Fri: 9:00 AM – 6:00 PM</li>
+							<li>Saturday: 9:00 AM – 2:00 PM</li>
+							<li>Sunday: Closed</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="card shadow mt-2 rounded-top-4">
+					<div class="bg-primary text-center p-1 text-light rounded-top-4 rounded-top">
+						<h4>Map Location</h4>
+					</div>
+					<div class="ratio ratio-16x9 rounded overflow-hidden">
+						<!--<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14230.13136778332!2d80.95394669515198!3d26.91831736846964!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd7e0637bf21%3A0x730fe46201abc68a!2sSoftpro%20Learning%20Center!5e0!3m2!1sen!2sin!4v1751377503578!5m2!1sen!2sin"
+							style="border: 0;" allowfullscreen="" loading="lazy" class="p-3"></iframe>-->
+							<iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d3558.2860652898303!2d81.07996987543882!3d26.894414926658104!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sgoel%20institute%20of%20technology%20%26%20management%20lucknow!5e0!3m2!1sen!2sin!4v1764848145638!5m2!1sen!2sin"
+							 width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="mt-5">
+			<h5 class="fw-bold text-primary mb-3">Frequently Asked Questions</h5>
+			<div class="accordion" id="faqAccordion">
+
+				<!-- Test Information -->
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="faqTest1">
+						<button class="accordion-button collapsed" type="button"
+							data-bs-toggle="collapse" data-bs-target="#collapseTest1">
+							How do I register for a test?</button>
+					</h2>
+					<div id="collapseTest1" class="accordion-collapse collapse"
+						data-bs-parent="#faqAccordion">
+						<div class="accordion-body">To register for a test, log in
+							to your student account and navigate to the "Upcoming Tests"
+							section, then click on the "Register" button next to your desired
+							test.</div>
+					</div>
+				</div>
+
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="faqTest2">
+						<button class="accordion-button collapsed" type="button"
+							data-bs-toggle="collapse" data-bs-target="#collapseTest2">
+							What type of questions are asked in the test?</button>
+					</h2>
+					<div id="collapseTest2" class="accordion-collapse collapse"
+						data-bs-parent="#faqAccordion">
+						<div class="accordion-body">The tests typically consist of
+							multiple choice questions (MCQs) and subject-specific problems
+							based on the syllabus of your course.</div>
+					</div>
+				</div>
+
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="faqTest3">
+						<button class="accordion-button collapsed" type="button"
+							data-bs-toggle="collapse" data-bs-target="#collapseTest3">
+							Can I retake a test?</button>
+					</h2>
+					<div id="collapseTest3" class="accordion-collapse collapse"
+						data-bs-parent="#faqAccordion">
+						<div class="accordion-body">Retaking a test is subject to
+							approval by the admin. Please contact your instructor or the test
+							coordinator for more details.</div>
+					</div>
+				</div>
+
+				<!-- Result Information -->
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="faqResult1">
+						<button class="accordion-button collapsed" type="button"
+							data-bs-toggle="collapse" data-bs-target="#collapseResult1">
+							When will my test results be available?</button>
+					</h2>
+					<div id="collapseResult1" class="accordion-collapse collapse"
+						data-bs-parent="#faqAccordion">
+						<div class="accordion-body">Test results are usually
+							published within 48 hours of submission. You will be notified via
+							email or through your student dashboard.</div>
+					</div>
+				</div>
+
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="faqResult2">
+						<button class="accordion-button collapsed" type="button"
+							data-bs-toggle="collapse" data-bs-target="#collapseResult2">
+							How can I view my test results?</button>
+					</h2>
+					<div id="collapseResult2" class="accordion-collapse collapse"
+						data-bs-parent="#faqAccordion">
+						<div class="accordion-body">Log in to your account and go to
+							the "Test Results" section. There, you'll see a list of all your
+							attempted tests and their scores.</div>
+					</div>
+				</div>
+
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="faqResult3">
+						<button class="accordion-button collapsed" type="button"
+							data-bs-toggle="collapse" data-bs-target="#collapseResult3">
+							Can I download my result report card?</button>
+					</h2>
+					<div id="collapseResult3" class="accordion-collapse collapse"
+						data-bs-parent="#faqAccordion">
+						<div class="accordion-body">Yes, you can download your
+							result as a PDF from the test result page. Look for the "Download
+							Report" button next to each test.</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		
+		<input type="hidden"  id="msg" th:if="${msg}" th:value="${msg}">
+		
+	<script type="text/javascript">
+		var msg = document.getElementById("msg");
+		if(msg.value!="")
+	 	{
+			alert(msg.value); 
+	 	}
+		
+	</script>
+
+	</main>
+</body>
+</html>

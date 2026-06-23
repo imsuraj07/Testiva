@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en" th:fragment="layout(content)">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Testiva - A Test Portal</title>
+
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- Bootstrap Icons -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+	<style>
+		html, body {
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			overflow-x: hidden;
+		}
+
+		/* ========== NAVBAR ========== */
+		.nav-link {
+			font-weight: 500;
+			color: #ffffff !important;
+			transition: 0.3s ease;
+		}
+
+		.nav-link:hover {
+			color: #ffd966 !important;
+		}
+
+		/* ========== FOOTER ========== */
+		.footer-main {
+			background: linear-gradient(135deg, #0d6efd, #084298);
+			color: #ffffff;
+			width: 100%;
+		}
+
+		.footer-title {
+			font-weight: 700;
+			margin-bottom: 15px;
+			position: relative;
+		}
+
+		.footer-title::after {
+			content: "";
+			position: absolute;
+			width: 40px;
+			height: 2px;
+			background: #ffd966;
+			left: 0;
+			bottom: -6px;
+		}
+
+		.footer-text {
+			color: #e9ecef;
+			font-size: 14px;
+			line-height: 1.7;
+		}
+
+		.footer-links {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		.footer-links li {
+			margin-bottom: 10px;
+		}
+
+		.footer-links a {
+			color: #e9ecef;
+			text-decoration: none;
+			font-size: 14px;
+			display: flex;
+			align-items: center;
+			transition: 0.3s ease;
+		}
+
+		.footer-links a i {
+			width: 22px;
+			font-size: 16px;
+			color: #ffd966;
+			transition: 0.3s ease;
+		}
+
+		.footer-links a:hover {
+			color: #ffffff;
+			transform: translateX(6px);
+		}
+
+		.footer-links a:hover i {
+			color: #ffffff;
+			transform: rotate(5deg) scale(1.2);
+		}
+
+		/* Social Icons */
+		.social-icons a {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 38px;
+			height: 38px;
+			border-radius: 50%;
+			background: rgba(255,255,255,0.15);
+			margin-right: 10px;
+			font-size: 16px;
+			color: #ffffff;
+			transition: 0.3s ease;
+			text-decoration: none;
+		}
+
+		.social-icons a:hover {
+			background: #ffd966;
+			color: #084298;
+			transform: translateY(-4px);
+		}
+
+		.footer-bottom {
+			background: #062f6b;
+			font-size: 14px;
+			width: 100%;
+		}
+	</style>
+</head>
+
+<body>
+
+<div class="container-fluid p-0">
+
+	<!-- =======================
+	     NAVBAR
+	======================= -->
+	<div class="row bg-primary text-center sticky-top m-0">
+		<nav class="navbar navbar-expand-lg navbar-dark">
+			<div class="container-fluid">
+				<a class="navbar-brand fw-bold fs-2 text-white" style="font-family: monotype corsiva;" href="/">
+					TESTIVA
+				</a>
+
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div class="collapse navbar-collapse" id="navbarNavDropdown">
+					<ul class="navbar-nav ms-auto">
+						<li class="nav-item">
+							<a class="nav-link active" href="/">Home</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="/AboutUs">About Us</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="/Registration">Registration</a>
+						</li>
+
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+								Login
+							</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="/StudentLogin">Student Login</a></li>
+								<li><a class="dropdown-item" href="/AdminLogin">Admin Login</a></li>
+							</ul>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="/ContactUs">Contact Us</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+
+	<!-- =======================
+	     MAIN CONTENT
+	======================= -->
+	<div id="Main" th:replace="${content}"></div>
+
+	<!-- =======================
+	     PROFESSIONAL FOOTER
+	======================= -->
+	<div class="row footer-main m-0">
+		<div class="col-12 p-0">
+
+			<div class="container-fluid px-5 py-5">
+				<div class="row">
+
+					<!-- About -->
+					<div class="col-md-4 mb-4">
+						<h5 class="footer-title">Testiva</h5>
+						<p class="footer-text">
+							Testiva is a secure and intelligent online test portal designed
+							for students, institutions, and organizations to conduct digital
+							examinations with accuracy, transparency, and speed.
+						</p>
+
+						<!-- Social Media -->
+						<div class="social-icons mt-3">
+							<a href="#"><i class="bi bi-facebook"></i></a>
+							<a href="#"><i class="bi bi-instagram"></i></a>
+							<a href="#"><i class="bi bi-twitter"></i></a>
+							<a href="#"><i class="bi bi-linkedin"></i></a>
+							<a href="#"><i class="bi bi-youtube"></i></a>
+						</div>
+					</div>
+
+					<!-- Quick Links WITH ANIMATED ICONS -->
+					<div class="col-md-4 mb-4">
+						<h5 class="footer-title">Quick Links</h5>
+						<ul class="footer-links">
+							<li>
+								<a href="/"><i class="bi bi-house-door-fill"></i>Home</a>
+							</li>
+							<li>
+								<a href="/AboutUs"><i class="bi bi-info-circle-fill"></i>About Us</a>
+							</li>
+							<li>
+								<a href="/Registration"><i class="bi bi-person-plus-fill"></i>Registration</a>
+							</li>
+							<li>
+								<a href="/StudentLogin"><i class="bi bi-mortarboard-fill"></i>Student Login</a>
+							</li>
+							<li>
+								<a href="/AdminLogin"><i class="bi bi-shield-lock-fill"></i>Admin Login</a>
+							</li>
+							<li>
+								<a href="/ContactUs"><i class="bi bi-envelope-fill"></i>Contact Us</a>
+							</li>
+						</ul>
+					</div>
+
+					<!-- Contact -->
+					<div class="col-md-4 mb-4">
+						<h5 class="footer-title">Contact Us</h5>
+						<p class="footer-text mb-2">
+							<i class="bi bi-geo-alt-fill me-2 text-warning"></i>India
+						</p>
+						<p class="footer-text mb-2">
+							<i class="bi bi-envelope-fill me-2 text-warning"></i>support@testiva.com
+						</p>
+						<p class="footer-text mb-2">
+							<i class="bi bi-telephone-fill me-2 text-warning"></i>+91 98765 43210
+						</p>
+						<p class="footer-text mb-0">
+							<i class="bi bi-clock-fill me-2 text-warning"></i>Mon – Sat: 9:00 AM – 7:00 PM
+						</p>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- Bottom Bar -->
+			<div class="footer-bottom text-center py-3">
+				<p class="mb-0">
+					© 2025 <strong>Testiva</strong> | All Rights Reserved
+				</p>
+			</div>
+
+		</div>
+	</div>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

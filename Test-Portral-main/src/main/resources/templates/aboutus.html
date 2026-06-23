@@ -1,0 +1,209 @@
+<html th:replace="~{base::layout(~{::main})}">
+	
+	<body>
+		<main>
+
+			<!-- Page Title -->
+			<div class="container py-5 text-center fade-in">
+				<h2 class="fw-bold text-primary">About Testiva</h2>
+				<p class="text-muted">
+					Testiva is a next-generation online examination platform built for
+					students, institutes, and organizations.
+				</p>
+				<hr class="w-25 mx-auto">
+			</div>
+
+			<!-- About Section -->
+			<div class="container py-4">
+				<div class="row align-items-center">
+
+					<div class="col-md-6 mb-4 slide-left">
+						<h4 class="fw-bold text-dark">Who We Are</h4>
+						<p class="text-muted">
+							<strong>Testiva</strong> is a professional online test portal designed to
+							conduct secure, scalable, and accurate digital examinations.
+							Our system supports academic tests, competitive exams,
+							recruitment assessments, and institutional evaluations.
+						</p>
+
+						<p class="text-muted">
+							With real-time result generation, automated evaluation,
+							and advanced analytics, Testiva helps both students
+							and educators make better academic decisions.
+						</p>
+
+						<a href="/" class="btn btn-outline-primary mt-2">
+							Back to Home
+						</a>
+					</div>
+
+					<div class="col-md-6 text-center slide-right">
+						<img 
+							src="https://images.unsplash.com/photo-1522071820081-009f0129c71c"
+							class="img-fluid rounded shadow"
+							alt="Online Examination System">
+					</div>
+
+				</div>
+			</div>
+
+			<!-- Vision & Mission -->
+			<div class="container-fluid bg-light py-5 mt-4">
+				<div class="container">
+					<div class="row text-center">
+
+						<div class="col-md-6 mb-4 zoom-in">
+							<div class="info-box h-100">
+								<h5 class="fw-bold text-primary">Our Vision</h5>
+								<p class="text-muted mt-3">
+									To become a nationally trusted online examination platform
+									that delivers intelligent, secure, and future-ready
+									digital assessment solutions for every learner.
+								</p>
+							</div>
+						</div>
+
+						<div class="col-md-6 mb-4 zoom-in">
+							<div class="info-box h-100">
+								<h5 class="fw-bold text-success">Our Mission</h5>
+								<p class="text-muted mt-3">
+									To simplify online testing through secure technology,
+									automated evaluation, real-time reporting,
+									and a seamless digital experience for all users.
+								</p>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+			<!-- Core Features -->
+			<div class="container py-5 text-center">
+				<h4 class="fw-bold mb-4 fade-in">Why Choose Testiva?</h4>
+
+				<div class="row">
+
+					<div class="col-md-3 mb-4 zoom-in">
+						<div class="feature-card h-100">
+							<h6 class="fw-bold">High Security</h6>
+							<p class="small text-muted">
+								Data encryption, secure login, role-based access,
+								and anti-cheating controls ensure fair examinations.
+							</p>
+						</div>
+					</div>
+
+					<div class="col-md-3 mb-4 zoom-in">
+						<div class="feature-card h-100">
+							<h6 class="fw-bold">Instant Evaluation</h6>
+							<p class="small text-muted">
+								Fully automated checking system that generates
+								results instantly after test submission.
+							</p>
+						</div>
+					</div>
+
+					<div class="col-md-3 mb-4 zoom-in">
+						<div class="feature-card h-100">
+							<h6 class="fw-bold">Performance Analytics</h6>
+							<p class="small text-muted">
+								Detailed subject-wise, topic-wise, and student-wise
+								performance analysis dashboards.
+							</p>
+						</div>
+					</div>
+
+					<div class="col-md-3 mb-4 zoom-in">
+						<div class="feature-card h-100">
+							<h6 class="fw-bold">24×7 Accessibility</h6>
+							<p class="small text-muted">
+								Students can attempt tests anytime from any device
+								with complete cloud-based availability.
+							</p>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- Embedded Animation + Hover CSS -->
+			<style>
+				.fade-in {
+					opacity: 0;
+					animation: fadeIn 1.2s ease forwards;
+				}
+
+				.slide-left {
+					opacity: 0;
+					transform: translateX(-40px);
+					animation: slideLeft 1s ease forwards;
+				}
+
+				.slide-right {
+					opacity: 0;
+					transform: translateX(40px);
+					animation: slideRight 1s ease forwards;
+				}
+
+				.zoom-in {
+					opacity: 0;
+					transform: scale(0.9);
+					animation: zoomIn 0.8s ease forwards;
+				}
+
+				/* Vision & Mission Box */
+				.info-box {
+					background: #fff;
+					padding: 25px;
+					border-radius: 10px;
+					box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+					transition: all 0.3s ease;
+				}
+
+				.info-box:hover {
+					transform: translateY(-8px);
+					box-shadow: 0 10px 25px rgba(13,110,253,0.25);
+				}
+
+				/* Feature Cards */
+				.feature-card {
+					background: #ffffff;
+					padding: 22px;
+					border-radius: 10px;
+					box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+					transition: all 0.35s ease;
+					cursor: pointer;
+				}
+
+				.feature-card:hover {
+					transform: translateY(-10px);
+					box-shadow: 0 12px 28px rgba(13,110,253,0.35);
+					background: #0d6efd;
+					color: #fff;
+				}
+
+				.feature-card:hover p {
+					color: #e9ecef;
+				}
+
+				@keyframes fadeIn {
+					to { opacity: 1; }
+				}
+
+				@keyframes slideLeft {
+					to { opacity: 1; transform: translateX(0); }
+				}
+
+				@keyframes slideRight {
+					to { opacity: 1; transform: translateX(0); }
+				}
+
+				@keyframes zoomIn {
+					to { opacity: 1; transform: scale(1); }
+				}
+			</style>
+
+		</main>
+	</body>
+</html>

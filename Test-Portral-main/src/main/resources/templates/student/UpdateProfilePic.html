@@ -1,0 +1,64 @@
+<html th:replace="~{Student/studentbase::layout(~{::main})}">
+  <body>
+    <main>
+      <div class="container py-5">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="card shadow border-0">
+              <div class="card-header bg-primary text-white text-center">
+                <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>Update Profile Picture</h5>
+              </div>
+              <div class="card-body text-center">
+                <!-- Profile Image Preview -->
+                <div class="mb-4">
+                  <img
+                    th:src="@{'/ProfilePic/'+${student.profilepic != null ? student.profilepic : '../images/user_img.jpg'}}"
+                    class="rounded-circle shadow-sm"
+                    alt="Profile Picture"
+                    width="150"
+                    height="150"
+                    id="profilePreview"
+                  />
+                </div>
+
+                <!-- Upload Form -->
+                <form th:action="@{UpdateProfilePic}" method="post" enctype="multipart/form-data">
+                  <div class="mb-3 text-start">
+                    <label for="profilePic" class="form-label">
+                      <i class="bi bi-upload"></i> Select a new profile picture
+                    </label>
+                    <input class="form-control" type="file" name="profilePic" id="profilePic" accept="image/*" required onchange="previewImage(event)">
+                  </div>
+
+                  <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">
+                      <i class="bi bi-save"></i> Update Picture
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+<input type="hidden" id="msg" th:if="${msg}" th:text="${msg}">
+      <!-- JS for preview -->
+      <script>
+       	var msg = document.getElementById("msg");
+       	if(msg.value)
+       	{
+       		alert(msg.value);
+       	}
+      
+        function previewImage(event) {
+          const reader = new FileReader();
+          reader.onload = function () {
+            document.getElementById('profilePreview').src = reader.result;
+          };
+          reader.readAsDataURL(event.target.files[0]);
+        }
+      </script>
+    </main>
+  </body>
+</html>

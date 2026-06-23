@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{Student/studentbase::layout(~{::main})}">
+
+<body>
+	<main class="container">
+
+		<!-- Dashboard Header -->
+		<div
+			class="card shadow-sm mb-4 p-3 dashboard-header d-flex flex-md-row justify-content-between align-items-center">
+			<div>
+				<h4 class="mb-1">
+					Welcome, <span th:text="${student.name}">John Doe</span>
+				</h4>
+				<p class="text-muted mb-0">Here's your academic overview and
+					latest test activity</p>
+			</div>
+			<div class="text-end">
+				<!-- Default profile image if not set -->
+				<img th:if="${student.profilepic == null or student.profilepic.isEmpty()}" src="/images/user_img.jpg"
+					class="profile-img mb-1">
+
+				<!-- Actual profile image if set -->
+				<img th:unless="${student.profilepic == null or student.profilepic.isEmpty()}"
+					th:src="@{'/ProfilePic/' + ${student.profilepic}}" onerror="this.src='/images/user_img.jpg'"
+					class="profile-img mb-1">
+
+				<div>
+					<h6 class="mb-0" th:text="${student.name}">John Doe</h6>
+					<small th:text="${student.email}">johndoe@example.com</small>
+				</div>
+			</div>
+		</div>
+
+		<!-- Quick Info Cards -->
+		<div class="row text-center">
+
+			<!-- Course Card -->
+			<div class="col-md-3 mb-4">
+				<div class="card shadow-sm border-0">
+					<div class="card-body">
+						<div class="icon-circle bg-primary text-white mb-3 mx-auto">
+							<i class="bi bi-journal-code"></i>
+						</div>
+						<h6 class="text-uppercase text-muted">My Course</h6>
+						<h5 class="fw-bold mt-1" th:text="${student.course}">Computer
+							Science</h5>
+					</div>
+				</div>
+			</div>
+
+			<!-- Branch Card -->
+			<div class="col-md-3 mb-4">
+				<div class="card shadow-sm border-0">
+					<div class="card-body">
+						<div class="icon-circle bg-success text-white mb-3 mx-auto">
+							<i class="bi bi-diagram-3"></i>
+						</div>
+						<h6 class="text-uppercase text-muted">My Branch</h6>
+						<h5 class="fw-bold mt-1" th:text="${student.branch}">Software
+							Engg.</h5>
+					</div>
+				</div>
+			</div>
+
+			<!-- Year Card -->
+			<div class="col-md-3 mb-4">
+				<div class="card shadow-sm border-0">
+					<div class="card-body">
+						<div class="icon-circle bg-warning text-white mb-3 mx-auto">
+							<i class="bi bi-calendar3"></i>
+						</div>
+						<h6 class="text-uppercase text-muted">My Year</h6>
+						<h5 class="fw-bold mt-1 text-dark" th:text="${student.year}">3rd
+							Year</h5>
+					</div>
+				</div>
+			</div>
+
+			<!-- Test Count Card -->
+			<div class="col-md-3 mb-4">
+				<div class="card shadow-sm border-0">
+					<div class="card-body">
+						<div class="icon-circle bg-danger text-white mb-3 mx-auto">
+							<i class="bi bi-clipboard2-check-fill"></i>
+						</div>
+						<h6 class="text-uppercase text-muted">Total Tests Attempt</h6>
+						<h5 class="fw-bold mt-1" th:text="${testCount}">5</h5>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Style for icons -->
+		<style>
+			.icon-circle {
+				width: 60px;
+				height: 60px;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 1.8rem;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+			}
+		</style>
+
+
+		<div class="row pb-5">
+			<!-- Other col-md-6 cards here -->
+			<div class="col-md-6">
+				<div class="wrapper">
+					<header>
+						<p class="current-date"></p>
+						<div class="icons">
+							<span id="prev" class="material-symbols-rounded">chevron_left</span>
+							<span id="next" class="material-symbols-rounded">chevron_right</span>
+						</div>
+					</header>
+					<div class="calendar">
+						<ul class="weeks">
+							<li>Sun</li>
+							<li>Mon</li>
+							<li>Tue</li>
+							<li>Wed</li>
+							<li>Thu</li>
+							<li>Fri</li>
+							<li>Sat</li>
+						</ul>
+						<ul class="days"></ul>
+					</div>
+				</div>
+			</div>
+
+			<!-- Insert this new progress card -->
+			<div class="col-md-6">
+				<div class="card shadow-sm border-0 h-100">
+					<div class="card-body">
+						<h4 class="mb-3">
+							<i class="bi bi-bar-chart-line-fill text-primary me-2"></i> Your
+							Last Test Progress
+						</h4>
+
+						<p class="text-muted">You've been making great progress! Keep
+							going strong. Here's a quick look at your recent test
+							performance:</p>
+
+						<!-- Example Score Data -->
+						<div th:if="${latestResult != null}" class="mb-2 mt-5 px-4 d-flex justify-content-between">
+							<span class="fw-semibold">Scored:</span> <span
+								th:text="${latestResult.totalScore} + ' / ' + ${latestResult.totalMarks}">42
+								/ 50</span>
+						</div>
+
+						<!-- Progress Bar -->
+						<div th:if="${latestResult != null}" class="progress my-3 border" style="height: 20px;">
+							<div class="progress-bar bg-success" role="progressbar"
+								th:style="'width:' + (${latestResult.totalMarks > 0 ? (latestResult.totalScore * 100 / latestResult.totalMarks) : 0}) + '%'"
+								th:text="${latestResult.totalMarks > 0 ? T(java.lang.Math).round(latestResult.totalScore * 100.0 / latestResult.totalMarks) : 0} + '%'">
+
+								84%</div>
+						</div>
+
+						<div class="text-center pt-3" th:if="${latestResult == null}">
+							<h4>You don't have given any test.</h4>
+							<a href="GiveTest" class="btn btn-outline-primary mt-4">Give Test</a>
+						</div>
+
+						<!-- Motivational Quote -->
+						<blockquote class="blockquote mb-0 mt-4 text-center">
+							<p class="mb-0 fst-italic">“Success is the sum of small
+								efforts repeated day in and day out.”</p>
+							<footer class="blockquote-footer">Robert Collier</footer>
+						</blockquote>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- Recent Tests Table -->
+		<div class="row mb-4">
+			<div class="col-12">
+				<div class="card shadow-sm border-0">
+					<div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+						<h5 class="mb-0 fw-bold"><i class="bi bi-list-check text-primary me-2"></i> Recent Test History</h5>
+					</div>
+					<div class="card-body">
+						<div class="table-responsive">
+							<table class="table table-hover align-middle mb-0">
+								<thead class="table-light">
+									<tr>
+										<th>Test Name</th>
+										<th>Date</th>
+										<th>Score</th>
+										<th>Percentage</th>
+										<th>Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="result : ${testResults}">
+										<td class="fw-semibold" th:text="${result.testName}">Math Test</td>
+										<td th:text="${#temporals.format(result.submittedAt, 'dd-MMM-yyyy hh:mm a')}">01-Oct-2026</td>
+										<td th:text="${result.totalScore} + ' / ' + ${result.totalMarks}">8 / 10</td>
+										<td>
+											<div class="d-flex align-items-center">
+												<span class="me-2" th:text="${result.totalMarks > 0 ? T(java.lang.Math).round(result.totalScore * 100.0 / result.totalMarks) : 0} + '%'">80%</span>
+												<div class="progress flex-grow-1" style="height: 6px;">
+													<div class="progress-bar bg-success" role="progressbar"
+														th:style="'width:' + ${result.totalMarks > 0 ? (result.totalScore * 100 / result.totalMarks) : 0} + '%'"></div>
+												</div>
+											</div>
+										</td>
+										<td>
+											<span th:if="${result.totalMarks > 0 && (result.totalScore * 100.0 / result.totalMarks) >= 40}" class="badge bg-success">Pass</span>
+											<span th:unless="${result.totalMarks > 0 && (result.totalScore * 100.0 / result.totalMarks) >= 40}" class="badge bg-danger">Fail</span>
+										</td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(testResults)}">
+										<td colspan="5" class="text-center text-muted py-4">No recent test records found.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Action Buttons -->
+		<div class="d-flex justify-content-center gap-3 mb-4">
+			<a href="#" class="btn btn-outline-primary"><i class="bi bi-journal-check"></i> View Tests</a> <a
+				href="SeeResult" class="btn btn-outline-primary"><i class="bi bi-bar-chart-line"></i> See Results</a> <a
+				href="ChangePassword" class="btn btn-outline-primary"><i class="bi bi-key-fill"></i> Change Password</a>
+		</div>
+
+		<!-- Profile Details -->
+		<div class="card shadow-sm">
+			<div class="card-header bg-light">
+				<h5 class="mb-0">
+					<i class="bi bi-person-circle me-1"></i> My Profile
+				</h5>
+			</div>
+			<div class="card-body">
+				<table class="table table-bordered">
+					<tr>
+						<th>Name</th>
+						<td th:text="${student.name}">John Doe</td>
+					</tr>
+					<tr>
+						<th>Email</th>
+						<td th:text="${student.email}">johndoe@example.com</td>
+					</tr>
+					<tr>
+						<th>Contact</th>
+						<td th:text="${student.contactno}">9876543210</td>
+					</tr>
+					<tr>
+						<th>Status</th>
+						<td><span th:if="${student.status == 'VERIFIED'}" class="badge bg-success">Verified</span> <span
+								th:if="${student.status == 'PENDING'}" class="badge bg-warning text-dark">Pending</span>
+							<span th:if="${student.status == 'DISABLED'}" class="badge bg-danger">Disabled</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<style>
+			.profile-img {
+				width: 60px;
+				height: 60px;
+				border-radius: 50%;
+				object-fit: cover;
+			}
+
+			.card-summary {
+				border-radius: 12px;
+				color: white;
+			}
+
+			.card-summary i {
+				font-size: 2rem;
+			}
+
+			.info-label {
+				font-size: 0.9rem;
+			}
+
+			.dashboard-header {
+				background: #f8f9fa;
+				border-radius: 8px;
+			}
+		</style>
+
+
+		<style>
+			.wrapper {
+				width: 100%;
+				background: #fff;
+				border-radius: 5px;
+				box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+			}
+
+			.wrapper header {
+				display: flex;
+				align-items: center;
+				padding: 25px 30px 10px;
+				justify-content: space-between;
+			}
+
+			header .icons {
+				display: flex;
+			}
+
+			header .icons span {
+				height: 35px;
+				width: 35px;
+				margin: 0 1px;
+				cursor: pointer;
+				color: #878787;
+				text-align: center;
+				line-height: 38px;
+				font-size: 1.9rem;
+				user-select: none;
+				border-radius: 50%;
+			}
+
+			.icons span:last-child {
+				margin-right: -10px;
+			}
+
+			header .icons span:hover {
+				background: #f2f2f2;
+			}
+
+			header .current-date {
+				font-size: 1.2rem;
+				font-weight: 500;
+			}
+
+			.calendar {
+				padding-bottom: 8px;
+			}
+
+			.calendar ul {
+				display: flex;
+				flex-wrap: wrap;
+				list-style: none;
+				text-align: center;
+			}
+
+			.calendar .days {
+				margin-bottom: 20px;
+			}
+
+			.calendar li {
+				color: #333;
+				width: calc(100%/ 7);
+				font-size: 0.8rem;
+			}
+
+			.calendar .weeks li {
+				font-weight: 500;
+				cursor: default;
+			}
+
+			.calendar .days li {
+				z-index: 1;
+				cursor: pointer;
+				position: relative;
+				margin-top: 30px;
+			}
+
+			.days li.inactive {
+				color: #aaa;
+			}
+
+			.days li.active {
+				color: #fff;
+			}
+
+			.days li::before {
+				position: absolute;
+				content: "";
+				left: 50%;
+				top: 50%;
+				height: 40px;
+				width: 40px;
+				z-index: -1;
+				border-radius: 50%;
+				transform: translate(-50%, -50%);
+			}
+
+			.days li.active::before {
+				background: #9B59B6;
+			}
+
+			.days li:not(.active):hover::before {
+				background: #f2f2f2;
+			}
+		</style>
+
+		<script>
+			const daysTag = document.querySelector(".days"),
+				currentDate = document.querySelector(".current-date"),
+				prevNextIcon = document.querySelectorAll(".icons span");
+			// getting new date, current year and month
+			let date = new Date(),
+				currYear = date.getFullYear(),
+				currMonth = date.getMonth();
+			// storing full name of all months in array
+			const months = ["January", "February", "March", "April", "May", "June", "July",
+				"August", "September", "October", "November", "December"];
+			const renderCalendar = () => {
+				let firstDayofMonth = new Date(currYear, currMonth, 1).getDay(), // getting first day of month
+					lastDateofMonth = new Date(currYear, currMonth + 1, 0).getDate(), // getting last date of month
+					lastDayofMonth = new Date(currYear, currMonth, lastDateofMonth).getDay(), // getting last day of month
+					lastDateofLastMonth = new Date(currYear, currMonth, 0).getDate(); // getting last date of previous month
+				let liTag = "";
+				for (let i = firstDayofMonth; i > 0; i--) { // creating li of previous month last days
+					liTag += `<li class="inactive">${lastDateofLastMonth - i + 1}</li>`;
+				}
+				for (let i = 1; i <= lastDateofMonth; i++) { // creating li of all days of current month
+					// adding active class to li if the current day, month, and year matched
+					let isToday = i === date.getDate() && currMonth === new Date().getMonth()
+						&& currYear === new Date().getFullYear() ? "active" : "";
+					liTag += `<li class="${isToday}">${i}</li>`;
+				}
+				for (let i = lastDayofMonth; i < 6; i++) { // creating li of next month first days
+					liTag += `<li class="inactive">${i - lastDayofMonth + 1}</li>`
+				}
+				currentDate.innerText = `${months[currMonth]} ${currYear}`; // passing current mon and yr as currentDate text
+				daysTag.innerHTML = liTag;
+			}
+			renderCalendar();
+			prevNextIcon.forEach(icon => { // getting prev and next icons
+				icon.addEventListener("click", () => { // adding click event on both icons
+					// if clicked icon is previous icon then decrement current month by 1 else increment it by 1
+					currMonth = icon.id === "prev" ? currMonth - 1 : currMonth + 1;
+					if (currMonth < 0 || currMonth > 11) { // if current month is less than 0 or greater than 11
+						// creating a new date of current year & month and pass it as date value
+						date = new Date(currYear, currMonth, new Date().getDate());
+						currYear = date.getFullYear(); // updating current year with new date year
+						currMonth = date.getMonth(); // updating current month with new date month
+					} else {
+						date = new Date(); // pass the current date as date value
+					}
+					renderCalendar(); // calling renderCalendar function
+				});
+			});
+		</script>
+		<link rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+
+	</main>
+</body>
+
+</html>

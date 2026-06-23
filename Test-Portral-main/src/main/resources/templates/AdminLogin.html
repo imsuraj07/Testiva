@@ -1,0 +1,129 @@
+<html th:replace="~{base::layout(~{::main})}">
+	<head></head>
+	
+	<body>
+		<main>
+			<style>
+    body {
+      background-color: #1f2937;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .admin-card {
+      background-color: #ffffff;
+      padding: 2.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
+      max-width: 420px;
+      width: 100%;
+      margin-top: 200px;
+    }
+
+    .admin-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .admin-header i {
+      font-size: 2.5rem;
+      color: #0d6efd;
+    }
+
+    .form-label {
+      font-weight: 500;
+    }
+
+    .toggle-password {
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+    }
+
+    .btn-primary:hover {
+      background-color: #0b5ed7;
+    }
+  </style>
+  
+  <div class="row py-5">
+  	 <div class="admin-card mx-auto">
+    <div class="admin-header">
+      <i class="bi bi-shield-lock-fill"></i>
+      <h4 class="mt-2">Admin Panel Login</h4>
+      
+      <div th:if="${msg}" class="alert alert-warning alert-dismissible fade show" role="alert">
+  		<span th:text="${msg}"></span>
+  		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	  </div>
+
+    </div>
+
+    <form action="/AdminLogin" method="post">
+      <!-- Email -->
+      <div class="mb-3">
+        <label class="form-label">Admin Email</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+          <input type="email" class="form-control" name="email" placeholder="admin@example.com" required>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+          <input type="password" class="form-control" name="password" id="adminPassword" placeholder="Enter password" required>
+          <span class="input-group-text toggle-password" onclick="toggleAdminPassword()">
+            <i class="bi bi-eye-fill" id="adminToggleIcon"></i>
+          </span>
+        </div>
+      </div>
+
+      <!-- Remember Me -->
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="adminRemember">
+        <label class="form-check-label" for="adminRemember">
+          Remember Me
+        </label>
+      </div>
+
+      <!-- Login Button -->
+      <div class="d-grid mb-2">
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-box-arrow-in-right me-1"></i> Login
+        </button>
+      </div>
+
+      <!-- Forgot Password Link -->
+      <div class="text-center">
+        <a href="#" class="small text-decoration-none">Forgot Admin Password?</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function toggleAdminPassword() {
+      const input = document.getElementById("adminPassword");
+      const icon = document.getElementById("adminToggleIcon");
+      if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("bi-eye-fill");
+        icon.classList.add("bi-eye-slash-fill");
+      } else {
+        input.type = "password";
+        icon.classList.remove("bi-eye-slash-fill");
+        icon.classList.add("bi-eye-fill");
+      }
+    }
+  </script>
+  </div>
+		</main>
+	</body>
+</html>

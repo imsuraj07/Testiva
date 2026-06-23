@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html th:replace="~{Admin/Adminbase::layout(~{::main})}">
+<body>
+    <main class="container">
+        <!-- Flash Message -->
+        <div th:if="${msg}" class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+            <span th:text="${msg}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card mt-4 mb-4 shadow-sm border-0">
+            <div class="card-header bg-white text-dark d-flex justify-content-between align-items-center">
+                <h4 class="mb-0 fw-bold" style="color: #1890FF;">Manual Question Entry</h4>
+                <a th:href="@{/Admin/ScheduleTest}" class="btn btn-outline-secondary btn-sm">Back to Scheduled Tests</a>
+            </div>
+            <div class="card-body bg-light">
+                <div class="mb-4">
+                    <h5 class="fw-bold text-dark">Test Details: <span class="text-primary" th:text="${test.testId} + ' - ' + ${test.testName}"></span></h5>
+                    <p class="mb-0 text-muted">Questions added: <span th:text="${currentCount}"></span> / <span th:text="${test.numberOfQuestions}"></span></p>
+                </div>
+
+                <div th:if="${currentCount >= test.numberOfQuestions}" class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle-fill"></i> This test has reached its maximum question limit. Cannot add more questions.
+                </div>
+
+                <form th:if="${currentCount < test.numberOfQuestions}" th:action="@{/Admin/save-question/{id}(id=${test.testId})}" th:object="${questionBank}" method="post">
+                    
+                    <div class="mb-3">
+                        <label for="question" class="form-label fw-bold">Question Text</label>
+                        <textarea class="form-control" id="question" th:field="*{question}" rows="3" required></textarea>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="a" class="form-label">Option A</label>
+                            <input type="text" class="form-control" id="a" th:field="*{a}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="b" class="form-label">Option B</label>
+                            <input type="text" class="form-control" id="b" th:field="*{b}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="c" class="form-label">Option C</label>
+                            <input type="text" class="form-control" id="c" th:field="*{c}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="d" class="form-label">Option D</label>
+                            <input type="text" class="form-control" id="d" th:field="*{d}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="correct" class="form-label fw-bold text-success">Correct Option</label>
+                            <select class="form-select" id="correct" th:field="*{correct}" required>
+                                <option value="" disabled selected>Select Correct Option</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Hidden fields for mapping to Test profile -->
+                    <input type="hidden" th:field="*{course}">
+                    <input type="hidden" th:field="*{branch}">
+                    <input type="hidden" th:field="*{year}">
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="submit" name="addAnother" value="true"
+                                class="btn btn-outline-primary px-4 fw-bold">
+                            <i class="bi bi-plus-circle"></i> Save &amp; Add Another
+                        </button>
+                        <button type="submit" class="btn btn-primary px-4 fw-bold shadow-sm"
+                                style="background-color: #1890FF; border: none;">
+                            <i class="bi bi-check-circle"></i> Save Question
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

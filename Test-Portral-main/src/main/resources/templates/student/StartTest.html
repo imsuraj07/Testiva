@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${testname} + ' — Testiva Exam'">Online Exam — Testiva</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #f0f4f8;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ── TOP BAR ── */
+        .exam-topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(135deg, #1a237e 0%, #1565C0 100%);
+            color: #fff;
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 12px rgba(0,0,0,.3);
+        }
+        .exam-topbar .test-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: .3px;
+        }
+        .timer-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,.15);
+            border-radius: 30px;
+            padding: 6px 18px;
+            font-size: 1rem;
+            font-weight: 700;
+            min-width: 110px;
+            justify-content: center;
+        }
+        .timer-pill.urgent { background: rgba(229,57,53,.5); animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+
+        /* ── QUESTION CARD ── */
+        .exam-wrapper {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 16px 60px;
+        }
+        .question-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 6px 30px rgba(0,0,0,.1);
+            overflow: hidden;
+        }
+        .question-header {
+            background: linear-gradient(135deg, #1565C0, #0d47a1);
+            color: #fff;
+            padding: 20px 28px;
+        }
+        .question-header .q-number {
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: .8;
+            margin-bottom: 4px;
+        }
+        .question-header .q-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        /* ── OPTIONS ── */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            padding: 24px 28px;
+        }
+        @media(max-width:600px){ .options-grid{ grid-template-columns: 1fr; } }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 2px solid #e3e8f0;
+            border-radius: 10px;
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: all .2s;
+            font-size: .95rem;
+            user-select: none;
+        }
+        .option-label:hover { border-color: #1565C0; background: #e8f0fe; }
+        .option-label input[type="radio"] { width: 18px; height: 18px; accent-color: #1565C0; flex-shrink: 0; }
+        .option-letter {
+            font-weight: 700;
+            color: #1565C0;
+            min-width: 22px;
+        }
+
+        /* ── FOOTER BAR ── */
+        .card-footer-bar {
+            border-top: 1px solid #e3e8f0;
+            padding: 16px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8faff;
+        }
+        .progress-text { font-size: .85rem; color: #555; }
+
+        /* Per-question timer ring */
+        .q-timer-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .q-timer-circle {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            border: 4px solid #e3e8f0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; font-weight: 700;
+            color: #1565C0;
+            transition: border-color .3s;
+        }
+        .q-timer-circle.warning { border-color: #f57c00; color: #f57c00; }
+        .q-timer-circle.danger  { border-color: #e53935; color: #e53935; }
+        .q-timer-label { font-size: .65rem; color: #888; }
+
+        /* Action bar */
+        .action-bar {
+            display: flex; gap: 12px; align-items: center;
+        }
+        .btn-next {
+            background: linear-gradient(135deg,#1565C0,#0d47a1);
+            border: none; color: #fff;
+            padding: 10px 32px; border-radius: 8px;
+            font-size: 1rem; font-weight: 600;
+            transition: opacity .2s;
+        }
+        .btn-next:hover { opacity: .85; }
+        .btn-submit {
+            background: linear-gradient(135deg,#c62828,#b71c1c);
+            border: none; color: #fff;
+            padding: 10px 28px; border-radius: 8px;
+            font-size: 1rem; font-weight: 600;
+        }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,.65);
+            z-index: 9999;
+            justify-content: center; align-items: center;
+        }
+        .modal-box {
+            background: #fff; border-radius: 16px;
+            padding: 40px; max-width: 480px; width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,.3);
+        }
+        .modal-box h3 { margin-bottom: 12px; color: #1a237e; }
+        .modal-box p  { color: #555; margin-bottom: 24px; line-height: 1.6; }
+        .btn-start {
+            background: linear-gradient(135deg,#1565C0,#0d47a1);
+            color: #fff; border: none; border-radius: 8px;
+            padding: 12px 40px; font-size: 1rem; font-weight: 700; cursor: pointer;
+        }
+
+        /* Instruction badges */
+        .instruction-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: .75rem; color: #c62828;
+            background: #fde8e8; border-radius: 20px;
+            padding: 4px 12px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<div class="exam-topbar">
+    <div class="test-name">
+        <i class="bi bi-mortarboard-fill me-2"></i>
+        <span th:text="${testname}">Online Test</span>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <div class="instruction-badge d-none d-md-flex">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            Do NOT exit fullscreen
+        </div>
+        <div class="timer-pill" id="globalTimerPill">
+            <i class="bi bi-clock"></i>
+            <span id="globalTimer" th:text="${tt}">30</span> min left
+        </div>
+    </div>
+</div>
+
+<!-- ── HIDDEN DATA ── -->
+<input type="hidden" id="jsonData" th:value="${json}">
+<input type="hidden" id="totalQuestions" th:value="${tq}">
+
+<!-- ── QUESTION CARD ── -->
+<div class="exam-wrapper">
+
+    <!-- Progress Bar -->
+    <div class="mb-3">
+        <div class="d-flex justify-content-between mb-1">
+            <small class="text-muted fw-semibold" id="progressLabel">Question 1</small>
+            <small class="text-muted" id="progressFraction"></small>
+        </div>
+        <div class="progress" style="height:6px; border-radius:4px;">
+            <div class="progress-bar" id="progressBar" role="progressbar" style="width:0%; background:#1565C0;"></div>
+        </div>
+    </div>
+
+    <div class="question-card">
+        <!-- Question Header -->
+        <div class="question-header">
+            <div class="q-number" id="qNumberLabel">Question 1</div>
+            <div class="q-text" id="lblquestion">Loading question...</div>
+        </div>
+
+        <!-- Options -->
+        <div class="options-grid">
+            <label class="option-label" for="a">
+                <input type="radio" id="a" name="option" value="A">
+                <span class="option-letter">A</span>
+                <span id="lblA">Option A</span>
+            </label>
+            <label class="option-label" for="b">
+                <input type="radio" id="b" name="option" value="B">
+                <span class="option-letter">B</span>
+                <span id="lblB">Option B</span>
+            </label>
+            <label class="option-label" for="c">
+                <input type="radio" id="c" name="option" value="C">
+                <span class="option-letter">C</span>
+                <span id="lblC">Option C</span>
+            </label>
+            <label class="option-label" for="d">
+                <input type="radio" id="d" name="option" value="D">
+                <span class="option-letter">D</span>
+                <span id="lblD">Option D</span>
+            </label>
+        </div>
+
+        <!-- Footer Bar -->
+        <div class="card-footer-bar">
+            <div class="q-timer-box">
+                <div class="q-timer-circle" id="qTimerCircle">30</div>
+                <div class="q-timer-label">sec left</div>
+            </div>
+
+            <div class="action-bar">
+                <button type="button" id="ButtonNext" class="btn-next">
+                    Next <i class="bi bi-arrow-right"></i>
+                </button>
+                <button type="button" id="ButtonSubmit" class="btn-submit" style="display:none;">
+                    <i class="bi bi-send-check-fill me-1"></i> Submit Test
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hint -->
+    <div class="text-center mt-3">
+        <small class="text-muted">
+            <i class="bi bi-info-circle me-1"></i>
+            No previous navigation allowed. Each question auto-advances after 30 seconds.
+        </small>
+    </div>
+</div>
+
+<!-- Hidden form to submit result -->
+<form id="hiddenForm" action="/Student/TestOver" method="POST">
+    <input type="hidden" name="t" id="totalInput">
+    <input type="hidden" name="s" id="scoreInput">
+    <input type="hidden" name="testId" id="testIdInput" th:value="${testId}">
+</form>
+
+<!-- Welcome Modal -->
+<div id="modal" class="modal-overlay">
+    <div class="modal-box">
+        <i class="bi bi-shield-check" style="font-size:3rem;color:#1565C0;"></i>
+        <h3 class="mt-3">Ready to Start?</h3>
+        <p>
+            This exam will enter <strong>fullscreen mode</strong>. Exiting fullscreen will
+            count as a violation. Exiting twice submits your test automatically.
+            <br><br>
+            <span style="color:#c62828;font-weight:600;">⏱ 30 seconds per question — no going back!</span>
+        </p>
+        <button class="btn-start" id="closeModal">
+            <i class="bi bi-play-circle me-2"></i>Start Exam
+        </button>
+    </div>
+</div>
+
+<!-- Fullscreen Exit Modal -->
+<div id="fullscreenExitModal" class="modal-overlay">
+    <div class="modal-box">
+        <i class="bi bi-exclamation-triangle-fill" style="font-size:3rem;color:#f57c00;"></i>
+        <h3 class="mt-3">Fullscreen Exited!</h3>
+        <p>You left fullscreen mode. This is your <strong id="violationCount">1st</strong> warning.
+           A second exit will auto-submit your test. Return to fullscreen to continue.</p>
+        <button class="btn-start" id="returnToFullscreen" style="background:linear-gradient(135deg,#f57c00,#e65100);">
+            <i class="bi bi-fullscreen me-2"></i>Return to Fullscreen
+        </button>
+    </div>
+</div>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+var jsonData, currentIndex = 0, qno = 1, score = 0, total = 0;
+var shuffledOptions = [], qTimer, globalTimer;
+var fullScreenExitCount = 0;
+var stateKey = '';
+
+// Globals for timers
+window.ttSecs = undefined;
+window.currentQSecs = undefined;
+
+// ── State Management ──
+function getSelectedOption() {
+    if(document.getElementById('a').checked) return 'A';
+    if(document.getElementById('b').checked) return 'B';
+    if(document.getElementById('c').checked) return 'C';
+    if(document.getElementById('d').checked) return 'D';
+    return null;
+}
+function restoreSelectedOption(opt) {
+    if(!opt) return;
+    if(opt==='A') document.getElementById('a').checked = true;
+    if(opt==='B') document.getElementById('b').checked = true;
+    if(opt==='C') document.getElementById('c').checked = true;
+    if(opt==='D') document.getElementById('d').checked = true;
+}
+
+function saveState() {
+    var st = {
+        currentIndex: currentIndex,
+        qno: qno,
+        score: score,
+        currentQSecs: window.currentQSecs,
+        ttSecs: window.ttSecs,
+        shuffledOptions: shuffledOptions,
+        selOpt: getSelectedOption()
+    };
+    sessionStorage.setItem(stateKey, JSON.stringify(st));
+}
+
+function loadState() {
+    var saved = sessionStorage.getItem(stateKey);
+    if(saved) {
+        var st = JSON.parse(saved);
+        currentIndex = st.currentIndex;
+        qno = st.qno;
+        score = st.score;
+        window.currentQSecs = st.currentQSecs;
+        window.ttSecs = st.ttSecs;
+        shuffledOptions = st.shuffledOptions;
+        
+        // Restore selected option with slight delay to let DOM render
+        setTimeout(function(){
+            restoreSelectedOption(st.selOpt);
+        }, 50);
+        return true;
+    }
+    return false;
+}
+
+function clearState() {
+    sessionStorage.removeItem(stateKey);
+}
+
+// ── Save choice changes ──
+document.addEventListener('change', function(e){
+    if(e.target.name === 'option') {
+        saveState();
+    }
+});
+
+// ── Shuffle options so answers aren't always in the same position ──
+function shuffleOptions() {
+    shuffledOptions = ['A','B','C','D'].sort(() => Math.random() - 0.5);
+}
+
+// ── Check selected answer ──
+function checkAnswer() {
+    var a = document.getElementById('a'), b = document.getElementById('b'),
+        c = document.getElementById('c'), d = document.getElementById('d');
+        
+    var currentItem = jsonData[currentIndex];
+    if(!currentItem) return;
+
+    if (a.checked && shuffledOptions[0] === currentItem.correct) score++;
+    else if (b.checked && shuffledOptions[1] === currentItem.correct) score++;
+    else if (c.checked && shuffledOptions[2] === currentItem.correct) score++;
+    else if (d.checked && shuffledOptions[3] === currentItem.correct) score++;
+}
+
+// ── Display current question ──
+function displayCurrentRecord() {
+    var item = jsonData[currentIndex];
+    if(!item) {
+        submitTest();
+        return;
+    }
+    document.getElementById('qNumberLabel').textContent = 'Question ' + qno;
+    document.getElementById('lblquestion').textContent = item.question;
+    // Clear radios
+    ['a','b','c','d'].forEach(id => { document.getElementById(id).checked = false; });
+    
+    // Shuffle if new question
+    if (shuffledOptions.length === 0) {
+        shuffleOptions();
+    }
+    
+    document.getElementById('lblA').textContent = item[shuffledOptions[0].toLowerCase()];
+    document.getElementById('lblB').textContent = item[shuffledOptions[1].toLowerCase()];
+    document.getElementById('lblC').textContent = item[shuffledOptions[2].toLowerCase()];
+    document.getElementById('lblD').textContent = item[shuffledOptions[3].toLowerCase()];
+
+    // Progress
+    var pct = Math.round((qno / total) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = 'Question ' + qno + ' of ' + total;
+    document.getElementById('progressFraction').textContent = pct + '% done';
+
+    // Show Submit on last question, Next otherwise
+    document.getElementById('ButtonNext').style.display   = (qno === total) ? 'none' : 'inline-block';
+    document.getElementById('ButtonSubmit').style.display = (qno === total) ? 'inline-block' : 'none';
+    
+    saveState();
+}
+
+// ── 30-second per-question countdown ──
+function startQTimer() {
+    var secs = window.currentQSecs !== undefined ? window.currentQSecs : 30;
+    var circle = document.getElementById('qTimerCircle');
+    circle.textContent = secs;
+    circle.className = 'q-timer-circle';
+    clearInterval(qTimer);
+    qTimer = setInterval(function () {
+        secs--;
+        window.currentQSecs = secs;
+        saveState();
+        circle.textContent = secs;
+        if (secs <= 10) circle.className = 'q-timer-circle danger';
+        else if (secs <= 20) circle.className = 'q-timer-circle warning';
+        if (secs <= 0) {
+            clearInterval(qTimer);
+            nextQuestion();
+        }
+    }, 1000);
+}
+
+// ── Global test timer (counts down total minutes) ──
+function startGlobalTimer() {
+    var ttEl = document.getElementById('globalTimer');
+    
+    if(window.ttSecs === undefined) {
+        var mins = parseInt(ttEl.textContent) || 30;
+        window.ttSecs = mins * 60;
+    }
+    
+    globalTimer = setInterval(function () {
+        window.ttSecs--;
+        saveState();
+        var m = Math.floor(window.ttSecs / 60), s = window.ttSecs % 60;
+        ttEl.textContent = m + ':' + (s < 10 ? '0' + s : s);
+        if (window.ttSecs <= 60) document.getElementById('globalTimerPill').classList.add('urgent');
+        if (window.ttSecs <= 0) {
+            clearInterval(globalTimer);
+            submitTest();
+        }
+    }, 1000);
+}
+
+// ── Move to next question ──
+function nextQuestion() {
+    checkAnswer();
+    currentIndex++;
+    qno++;
+    shuffledOptions = []; // reset so new question shuffles
+    window.currentQSecs = 30;
+    
+    if (currentIndex >= jsonData.length) {
+        submitTest();
+    } else {
+        displayCurrentRecord();
+        startQTimer();
+    }
+}
+
+// ── Submit ──
+function submitTest() {
+    clearState();
+    clearInterval(qTimer);
+    clearInterval(globalTimer);
+    document.getElementById('totalInput').value = total;
+    document.getElementById('scoreInput').value = score;
+    document.getElementById('hiddenForm').submit();
+}
+
+// ── Start everything ──
+function startTest() {
+    stateKey = 'testiva_test_' + document.getElementById('testIdInput').value;
+    jsonData = JSON.parse(document.getElementById('jsonData').value);
+    total = jsonData.length;
+    
+    // CRITICAL GUARD: Prevent auto-submit if question list is empty
+    if (total === 0) {
+        alert('Error: No questions found for this test. Please contact your instructor.');
+        window.location.href = '/Student/GiveTest';
+        return;
+    }
+    
+    if(loadState()) {
+        // Was restoring state from refresh. Check if test already passed
+        if(currentIndex >= jsonData.length) {
+            submitTest();
+            return;
+        }
+    } else {
+        // Initial setup
+        window.currentQSecs = 30;
+    }
+    displayCurrentRecord();
+    startQTimer();
+    startGlobalTimer();
+    disableKeyboard();
+}
+
+// ── Fullscreen helpers ──
+function gofullscreen() {
+    var el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen();
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    else if (el.msRequestFullscreen) el.msRequestFullscreen();
+    document.addEventListener('fullscreenchange', checkFullScreenExit);
+    document.addEventListener('webkitfullscreenchange', checkFullScreenExit);
+}
+
+function checkFullScreenExit() {
+    if (!document.fullscreenElement && !document.webkitIsFullScreen && !document.msFullscreenElement) {
+        fullScreenExitCount++;
+        if (fullScreenExitCount >= 2) {
+            alert('You exited fullscreen twice. Your test will now be submitted.');
+            submitTest();
+        } else {
+            document.getElementById('violationCount').textContent = '1st';
+            document.getElementById('fullscreenExitModal').style.display = 'flex';
+        }
+    }
+}
+
+// ── Prevent tab switch / copy ──
+function disableKeyboard() {
+    document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && ['t','n','w','r'].includes(e.key.toLowerCase()) ||
+            ['Escape','Alt'].includes(e.key)) {
+            e.preventDefault();
+        }
+    });
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    window.addEventListener('beforeunload', e => { e.returnValue = ''; });
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+            submitTest();
+        }
+    });
+}
+
+// ── DOM Ready ──
+document.addEventListener('DOMContentLoaded', function () {
+    // Show welcome modal
+    document.getElementById('modal').style.display = 'flex';
+
+    document.getElementById('closeModal').addEventListener('click', function () {
+        document.getElementById('modal').style.display = 'none';
+        gofullscreen();
+        startTest();
+    });
+
+    document.getElementById('returnToFullscreen').addEventListener('click', function () {
+        document.getElementById('fullscreenExitModal').style.display = 'none';
+        gofullscreen();
+    });
+
+    document.getElementById('ButtonNext').addEventListener('click', nextQuestion);
+    document.getElementById('ButtonSubmit').addEventListener('click', submitTest);
+});
+/*]]>*/
+</script>
+</body>
+</html>

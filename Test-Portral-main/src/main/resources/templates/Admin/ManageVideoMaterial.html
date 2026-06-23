@@ -1,0 +1,71 @@
+<html th:replace="~{Admin/adminbase::layout(~{::main})}">
+<body>
+<main>
+  <div class="container py-4">
+
+    <h3 class="fw-bold mb-4">
+      🎬 Manage Video Materials
+    </h3>
+
+    <div th:if="${videoMaterials.isEmpty()}" class="alert alert-info">
+      No video materials uploaded yet.
+    </div>
+
+    <div class="table-responsive" th:if="${!videoMaterials.isEmpty()}">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Course</th>
+            <th>Branch</th>
+            <th>Year</th>
+            <th>Views</th>
+            <th>Visibility</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="video, stat : ${videoMaterials}">
+            <td th:text="${stat.count}"></td>
+            <td th:text="${video.title}"></td>
+            <td th:text="${video.course}"></td>
+            <td th:text="${video.branch}"></td>
+            <td th:text="${video.year}"></td>
+            <td th:text="${video.viewCount}"></td>
+
+            <td>
+              <span
+                class="badge"
+                th:text="${video.isVisible}"
+                th:classappend="${video.isVisible.name() == 'Visible'} 
+                  ? 'bg-success' : 'bg-secondary'">
+              </span>
+            </td>
+
+            <td class="text-nowrap">
+              <a th:href="${video.fileUrl}" target="_blank"
+                 class="btn btn-sm btn-primary">
+                Watch
+              </a>
+
+              <a th:href="@{/Admin/ToggleMaterialVisibility(id=${video.id})}"
+                 class="btn btn-sm btn-warning">
+                Toggle
+              </a>
+
+              <a th:href="@{/Admin/DeleteMaterial(id=${video.id})}"
+                 class="btn btn-sm btn-danger"
+                 onclick="return confirm('Delete this video?')">
+                Delete
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</main>
+</body>
+</html>

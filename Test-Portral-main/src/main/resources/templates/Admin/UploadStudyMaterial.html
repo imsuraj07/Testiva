@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html th:replace="~{Admin/adminbase::layout(~{::main})}">
+<body>
+<main>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+
+      <div class="card shadow border-0 rounded-3">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">
+            <i class="bi bi-cloud-arrow-up me-2"></i>Upload Study Material
+          </h4>
+        </div>
+
+        <div class="card-body">
+
+          <!-- ✅ FORM -->
+          <form th:action="@{/Admin/UploadStudyMaterial}"
+                method="post"
+                enctype="multipart/form-data"
+                th:object="${studyMaterial}">
+
+            <!-- Title -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Title</label>
+              <input type="text" th:field="*{title}" class="form-control" required>
+            </div>
+
+            <!-- Material Type -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Material Type</label>
+              <select th:field="*{materialType}" class="form-select"
+                      id="materialType"
+                      onchange="toggleMaterialInput()" required>
+                <option value="">Select Type</option>
+                <option value="PDF">PDF / Notes</option>
+                <option value="Video">Video (YouTube / Drive)</option>
+              </select>
+            </div>
+
+            <!-- ✅ FILE UPLOAD (PDF, PPT, DOC) -->
+            <div class="mb-3" id="fileInputBox" style="display:none;">
+              <label class="form-label fw-semibold">Upload File</label>
+              <input type="file"
+                     name="materialFile"
+                     class="form-control"
+                     accept=".pdf,.ppt,.pptx,.doc,.docx">
+              <small class="text-muted">Allowed: PDF, PPT, DOC</small>
+            </div>
+
+            <!-- ✅ VIDEO URL -->
+            <div class="mb-3" id="videoInputBox" style="display:none;">
+              <label class="form-label fw-semibold">Video URL</label>
+              <input type="text"
+                     th:field="*{fileUrl}"
+                     class="form-control"
+                     placeholder="Paste YouTube / Drive embed link">
+              <small class="text-muted">Example: https://youtube.com/embed/xxxx</small>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Description</label>
+              <textarea th:field="*{description}"
+                        class="form-control"
+                        rows="3"></textarea>
+            </div>
+
+            <!-- Course / Branch / Year -->
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Course</label>
+                <input type="text" th:field="*{course}" class="form-control" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Branch</label>
+                <input type="text" th:field="*{branch}" class="form-control" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Year</label>
+                <input type="text" th:field="*{year}" class="form-control" required>
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Tags</label>
+              <input type="text" th:field="*{tags}" class="form-control"
+                     placeholder="exam, important, revision">
+            </div>
+
+            <!-- Visibility -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Visibility</label>
+              <select th:field="*{isVisible}" class="form-select">
+                <option value="Visible">Visible</option>
+                <option value="Hidden">Hidden</option>
+              </select>
+            </div>
+
+            <!-- Submit -->
+            <div class="text-end">
+              <button type="submit" class="btn btn-success px-4">
+                <i class="bi bi-upload me-1"></i> Upload Material
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Bootstrap Icons -->
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<!-- ✅ SIMPLE JS -->
+<script>
+  function toggleMaterialInput() {
+    const type = document.getElementById("materialType").value;
+    document.getElementById("fileInputBox").style.display =
+        (type === "PDF") ? "block" : "none";
+    document.getElementById("videoInputBox").style.display =
+        (type === "Video") ? "block" : "none";
+  }
+</script>
+
+</main>
+</body>
+</html>

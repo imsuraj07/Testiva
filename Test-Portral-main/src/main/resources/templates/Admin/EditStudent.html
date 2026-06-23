@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{Admin/adminbase::layout(~{::main})}">
+  <body>
+    <main class="container">
+      <div class="card shadow-lg p-4">
+        <h3 class="text-center text-primary mb-4">Edit Student Details</h3>
+
+        <form th:action="@{EditStudent}" th:object="${studentInfo}" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="studentId" th:field="*{id}" />
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Full Name</label>
+              <input type="text" th:field="*{name}" class="form-control" placeholder="Enter full name" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input type="email" th:field="*{email}" class="form-control" required readonly />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Contact Number</label>
+              <input type="text" th:field="*{contactno}" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Aadhar Number</label>
+              <input type="text" th:field="*{aadharno}" class="form-control" />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="form-label">Course</label>
+              <select th:field="*{course}" class="form-select" id="course" required>
+                  <option value="" selected >Select Course</option>
+                  <option value="B.Tech">B.Tech</option>
+                  <option value="M.Tech">M.Tech</option>
+                  <option value="BCA">BCA</option>
+                  <option value="MCA">MCA</option>   
+                  <option value="Diploma">Diploma</option>  
+               </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Branch</label>
+              <select th:field="*{branch}" class="form-select" id="branch" required>
+                        <option value="" selected disabled>--Select Branch--</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Electronics">Electronics</option>
+               </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Year</label>
+              <select th:field="*{year}" class="form-select" id="year" required>
+                        <option value="" selected disabled>Select Year</option>
+                        <option value="First Year">First Year</option>
+                        <option value="Second Year">Second Year</option>
+                        <option value="Third Year">Third Year</option>
+                        <option value="Fourth Year">Fourth Year</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Date of Birth</label>
+              <input type="date" name="dob" th:value="${#temporals.format(studentInfo.dob, 'yyyy-MM-dd')}" class="form-control" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Status</label>
+              <select class="form-select" th:field="*{status}">
+                <option value="PENDING">Pending</option>
+                <option value="VERIFIED">Verified</option>
+                <option value="DISABLED">Disabled</option>
+              </select>
+            </div>
+            
+          </div>
+
+          <!-- <div class="my-2 text-center mx-auto" th:if="*{profilepic != null}">
+                <img th:src="@{'/ProfilePic/' + *{profilepic}}" class="my-2 rounded-circle p-1 bg-primary shadow" width="150" />
+                <div class="col-md-12">
+              <label class="form-label">Profile Picture</label>
+              <input type="file" name="profileImage" class="form-control" />
+            </div>
+          </div> -->
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-success">Update Student</button>
+          </div>
+          
+          
+        </form>
+      </div>
+    </main>
+  </body>
+</html>

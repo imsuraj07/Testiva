@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{Admin/Adminbase::layout(~{::main})}">
+<body>
+    <main class="container">
+        <div class="card shadow">
+            <div class="card-header py-3 bg-primary text-white text-center">
+                <h4>Manage Enquiries</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="myTable" class="table table-bordered table-hover mt-2">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th>Sr. No.</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact No</th>
+                                <th>Gender</th>
+                                <th>Subject</th>
+                                <th>Enquiry Text</th>
+                                <th>Address</th>
+                                <th>Submitted At</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="enquiry, srno : ${enquiryList}">
+                                <td class="text-center" th:text="${srno.index + 1}"></td>
+                                <td th:text="${enquiry.name}"></td>
+                                <td th:text="${enquiry.email}"></td>
+                                <td th:text="${enquiry.contactno}"></td>
+                                <td th:text="${enquiry.gender}"></td>
+                                <td th:text="${enquiry.subject}"></td>
+                                <td th:text="${enquiry.enquiryText}"></td>
+                                <td th:text="${enquiry.address}"></td>
+                                <td th:text="${#temporals.format(enquiry.submittedAt, 'dd-MM-yyyy HH:mm')}"></td>
+                                <td class="text-center">
+                                    <span th:text="${enquiry.status}"
+                                       class="btn btn-sm"
+                                       th:classappend="(${enquiry.status.name()} == 'PENDING' ? 'btn-warning' : 
+                                                       (${enquiry.status.name()} == 'RESPONSE_SENT' ? 'btn-success' : 'btn-secondary'))">
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <a th:if="${enquiry.status.name()=='PENDING'}" href="#" class="btn btn-info btn-sm me-2" data-bs-toggle="modal" th:attr="data-bs-target='#replyModal_' + ${enquiry.id}">
+    									<i class="bi bi-reply-fill"></i> Reply
+									</a>
+
+									<a th:href="@{DeleteEnquiry(id=${enquiry.id})}" class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Are you sure you want to delete this enquiry?');">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                    
+                                    <!-- Modal -->
+<div class="modal fade" th:id="'replyModal_' + ${enquiry.id}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form th:action="@{SendEnquiryReply}" method="post">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Reply to <span th:text="${enquiry.name}">User</span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" th:value="${enquiry.id}"/>
+                    <div class="mb-3">
+                        <label class="form-label">To Email</label>
+                        <input type="email" class="form-control" name="toEmail" th:value="${enquiry.email}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Subject</label>
+                        <input type="text" class="form-control" name="subject" placeholder="Reply subject" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Your Message</label>
+                        <textarea class="form-control" name="message" rows="4" placeholder="Type your reply..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Send Reply</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+                                    
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            th, td {
+                white-space: nowrap;
+            }
+        </style>
+        
+        
+    </main>
+</body>
+</html>

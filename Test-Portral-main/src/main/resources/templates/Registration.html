@@ -1,0 +1,199 @@
+<html th:replace="~{base::layout(~{::main})}">
+
+<body>
+	<main>
+		<style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .registration-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #0d6efd;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .profile-pic-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .profile-pic-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #0d6efd;
+            background-color: #f1f1f1;
+        }
+        .upload-btn {
+            margin-top: 10px;
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .input-group-text {
+            min-width: 45px;
+            display: flex;
+            justify-content: center;
+        }
+        .submit-btn {
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+    <div class="container registration-container">
+        <h2 class="form-header">Student Registration Form</h2>
+        
+        <form id="registrationForm" th:action="@{/Registration}" method="post" th:object="${stdinfo}" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="fullName" class="form-label">Full Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input th:field="${stdinfo.name}" type="text" class="form-control" id="fullName" placeholder="John Doe" required>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="contactNo" class="form-label">Contact Number</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                        <input th:field="${stdinfo.contactno}" type="tel" class="form-control" id="contactNo" placeholder="9876543210" pattern="[0-9]{10}" title="10-digit phone number" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input th:field="${stdinfo.email}" type="email" class="form-control" id="email" placeholder="john@example.com" required>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="course" class="form-label">Course</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-graduation-cap"></i></span>
+                        <select th:field="${stdinfo.course}" class="form-select" id="course" required>
+                        	<option value="" selected >Select Course</option>
+                        	<option value="B.Tech">B.Tech</option>
+                       		<option value="M.Tech">M.Tech</option>
+                        	<option value="BCA">BCA</option>
+                        	<option value="MCA">MCA</option>   
+                        	<option value="Diploma">Diploma</option>  
+                    	</select>
+                </div>
+            </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="branch" class="form-label">Branch</label>
+                    <select th:field="${stdinfo.branch}" class="form-select" id="branch" required>
+                        <option value="" selected disabled>--Select Branch--</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Electronics">Electronics</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="year" class="form-label">Year</label>
+                    <select th:field="${stdinfo.year}" class="form-select" id="year" required>
+                        <option value="" selected disabled>Select Year</option>
+                        <option value="First Year">First Year</option>
+                        <option value="Second Year">Second Year</option>
+                        <option value="Third Year">Third Year</option>
+                        <option value="Fourth Year">Fourth Year</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" class="form-control" id="password" placeholder="Create password (min. 8 chars)" minlength="8" required>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input th:field="${stdinfo.password}" type="password" class="form-control" id="confirmPassword" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="aadhaarNo" class="form-label">Aadhaar Number</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                        <input th:field="${stdinfo.aadharno}" type="text" class="form-control" id="aadhaarNo" pattern="[0-9]{12}" title="12-digit Aadhaar number" required>
+                    </div>
+                    <small class="text-muted">Enter 12-digit Aadhaar number without spaces</small>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="dob" class="form-label">Date of Birth</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                        <input th:field="${stdinfo.dob}" type="date" class="form-control" id="dob" max="<?php echo date('Y-m-d'); ?>" required>
+                    </div>
+                    <small class="text-muted">Select your date of birth</small>
+                </div>
+            </div>
+            
+            <div class="profile-pic-container">
+                <img id="profilePicPreview" src="images/user_img.jpg" alt="Student profile picture placeholder" class="profile-pic-preview">
+                <div class="upload-btn-wrapper">
+                    <button type="button" class="btn btn-outline-primary upload-btn">Upload Profile Picture</button>
+                    <input name="profilePic"  type="file" id="profilePic" accept="image/*" style="display: none;">
+                </div>
+            </div>
+            
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary submit-btn">Register</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Profile picture upload functionality
+            const profilePicInput = document.getElementById('profilePic');
+            const profilePicPreview = document.getElementById('profilePicPreview');
+            const uploadBtn = document.querySelector('.upload-btn');
+            
+            uploadBtn.addEventListener('click', function() {
+                profilePicInput.click();
+            });
+            
+            profilePicInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        profilePicPreview.src = e.target.result;
+                        profilePicPreview.alt = "Uploaded student profile picture";
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        });
+    </script>
+	</main>
+</body>
+</html>

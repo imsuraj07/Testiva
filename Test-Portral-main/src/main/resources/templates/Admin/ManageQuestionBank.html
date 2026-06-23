@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html th:replace="~{Admin/Adminbase::layout(~{::main})}">
+<body>
+    <main class="container">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white text-center">
+                <h4>Manage Question Bank</h4>
+            </div>
+
+            <div class="card-body">
+                <!-- Flash Message (standard Spring message) -->
+                <div th:if="${msg}" class="alert alert-info alert-dismissible fade show mb-3" role="alert">
+                    <span th:text="${msg}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                
+                <!-- Success Message (as requested by user for Test ID) -->
+                <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show mb-3 fw-bold" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                
+                <form id="assignForm" th:action="@{/Admin/assign-questions-to-test}" method="post" onsubmit="return validateSelection()">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center">
+                <select id="testSelect" name="testId" class="form-select me-2" style="max-width: 300px;" required>
+                            <option value="" disabled selected>Select Target Test</option>
+                            <option th:each="test : ${testList}" th:value="${test.testId}" th:data-required="${test.numberOfQuestions}" th:text="${test.testId} + ' - ' + ${test.testName} + ' (' + ${test.numberOfQuestions} + ' Q)'"></option>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm text-nowrap">
+                            <i class="bi bi-box-arrow-in-right"></i> Add Selected to Test
+                        </button>
+                    </div>
+
+                    <a th:href="@{AddQuestion}" class="btn btn-success btn-sm">
+                        <i class="bi bi-plus-circle"></i> Add New Question
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="myTable" class="table table-bordered table-hover mt-2">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th class="text-center">
+                                    <input class="form-check-input" type="checkbox" id="selectAllCheckbox" onclick="var checkboxes = document.querySelectorAll('input[name=\'selectedQuestionIds\']'); for(var checkbox of checkboxes) { checkbox.checked = this.checked; }">
+                                </th>
+                                <th>Sr. No.</th>
+                                <th>Question</th>
+                                <th>Option A</th>
+                                <th>Option B</th>
+                                <th>Option C</th>
+                                <th>Option D</th>
+                                <th>Correct</th>
+                                <th>Course</th>
+                                <th>Branch</th>
+                                <th>Year</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="q, iter : ${questionList}">
+                                <td class="text-center">
+                                    <input class="form-check-input" type="checkbox" name="selectedQuestionIds" th:value="${q.id}">
+                                </td>
+                                <td class="text-center" th:text="${iter.index + 1}"></td>
+                                <td th:text="${q.question}"></td>
+                                <td th:text="${q.a}"></td>
+                                <td th:text="${q.b}"></td>
+                                <td th:text="${q.c}"></td>
+                                <td th:text="${q.d}"></td>
+                                <td class="text-center">
+                                    <span class="badge bg-success" th:text="${q.correct}"></span>
+                                </td>
+                                <td th:text="${q.course}"></td>
+                                <td th:text="${q.branch}"></td>
+                                <td th:text="${q.year}"></td>
+                                <td class="text-center">
+                                    <a th:href="@{DeleteQuestion(id=${q.id})}" class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Are you sure you want to delete this question?');">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </form>
+
+                <style>
+                    th, td {
+                        white-space: nowrap;
+                    }
+                    .badge {
+                        font-size: 14px;
+                        padding: 5px 10px;
+                    }
+                    /* Simple modal styling */
+                    .custom-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; }
+                    .custom-modal-content { background:#fff; padding:30px; border-radius:12px; text-align:center; min-width:300px; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
+                </style>
+            </div>
+        </div>
+
+        <!-- Popups for Steps 2, 3 and 4 -->
+        <div id="infoModal" class="custom-modal">
+            <div class="custom-modal-content">
+                <h4 class="mb-3 text-primary" id="modalTitle">Notice</h4>
+                <p id="modalBody" class="mb-4 fs-5"></p>
+                <button type="button" class="btn btn-primary px-4" onclick="document.getElementById('infoModal').style.display='none'">OK</button>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            var pendingTestId = /*[[${pendingTestId}]]*/ null;
+            var requiredQuestions = /*[[${requiredQuestionsCount}]]*/ 0;
+            var successTestId = /*[[${successTestId}]]*/ null;
+
+            document.addEventListener("DOMContentLoaded", function() {
+                // Step 4: Success Popup after questions assigned
+                if (successTestId != null && successTestId !== "") {
+                    showModal("✅ Test Scheduled Successfully!", "Your test has been scheduled successfully.<br><br><b>Test ID: " + successTestId + "</b><br><br>Share this ID with your students.");
+                } 
+                // Step 1: Redirect from ScheduleTest with pending test
+                else if (pendingTestId != null) {
+                    showModal("Select Questions for This Test", "Please select exactly <b>" + requiredQuestions + "</b> questions for this test.<br><br>Minimum required: " + requiredQuestions);
+                    // Auto-select pending test in dropdown
+                    var select = document.getElementById("testSelect");
+                    for (var i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value === pendingTestId) {
+                            select.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            });
+
+            function showModal(title, message) {
+                document.getElementById("modalTitle").innerHTML = title;
+                document.getElementById("modalBody").innerHTML = message;
+                document.getElementById("infoModal").style.display = "flex";
+            }
+
+            // Universal validation: always checks against the selected test's required count
+            function validateSelection() {
+                var select = document.getElementById("testSelect");
+                var selectedOption = select.options[select.selectedIndex];
+                
+                if (!selectedOption || !selectedOption.value) {
+                    showModal("Error", "Please select a target test first.");
+                    return false;
+                }
+
+                var required = parseInt(selectedOption.getAttribute("data-required")) || 0;
+                var selectedCount = document.querySelectorAll('input[name="selectedQuestionIds"]:checked').length;
+
+                if (selectedCount === 0) {
+                    showModal("Error", "No questions selected. Please select at least 1 question.");
+                    return false;
+                }
+
+                if (required > 0) {
+                    if (selectedCount > required) {
+                        showModal("Too Many Questions", "You selected <b>" + selectedCount + "</b> questions but only <b>" + required + "</b> are required.<br>Please deselect " + (selectedCount - required) + " question(s).");
+                        return false;
+                    } else if (selectedCount < required) {
+                        showModal("Not Enough Questions", "You selected <b>" + selectedCount + "</b> questions but <b>" + required + "</b> are required.<br>Please select " + (required - selectedCount) + " more question(s).");
+                        return false;
+                    }
+                }
+                
+                return true; 
+            }
+            /*]]>*/
+        </script>
+    </main>
+</body>
+</html>

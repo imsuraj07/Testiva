@@ -1,0 +1,103 @@
+<html th:replace="~{Student/studentbase::layout(~{::main})}">
+<body>
+    <main class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+
+                <!-- Result Card -->
+                <div class="card shadow-lg border-0 text-center" th:if="${result != null}">
+                    <div class="card-header py-4"
+                         th:classappend="${result.totalMarks > 0 && result.totalScore * 100 / result.totalMarks >= 50 ? 'bg-success text-white' : 'bg-danger text-white'}">
+                        <h2 th:if="${result.totalMarks > 0 && result.totalScore * 100 / result.totalMarks >= 50}">🎉 Test Completed!</h2>
+                        <h2 th:unless="${result.totalMarks > 0 && result.totalScore * 100 / result.totalMarks >= 50}">😔 Better Luck Next Time</h2>
+                        <p class="mb-0" th:text="${result.testName}">Test Name</p>
+                    </div>
+                    <div class="card-body py-4">
+
+                        <!-- Score Circle -->
+                        <div class="my-3">
+                            <h1 class="display-3 fw-bold"
+                                th:text="${result.totalScore} + ' / ' + ${result.totalMarks}"
+                                th:style="${result.totalMarks > 0 && result.totalScore * 100 / result.totalMarks >= 50 ? 'color: #28a745;' : 'color: #dc3545;'}">
+                            </h1>
+                            <p class="text-muted">Your Score / Total Marks</p>
+                        </div>
+
+                        <!-- Percentage Progress Bar -->
+                        <div class="progress mx-4 mb-3" style="height: 22px; border-radius: 12px;">
+                            <div class="progress-bar fw-bold"
+                                 role="progressbar"
+                                 th:classappend="${result.totalMarks > 0 && result.totalScore * 100 / result.totalMarks >= 50 ? 'bg-success' : 'bg-danger'}"
+                                 th:style="'width:' + (${result.totalMarks > 0 ? (result.totalScore * 100 / result.totalMarks) : 0}) + '%'"
+                                 th:text="${result.totalMarks > 0 ? T(java.lang.Math).round(result.totalScore * 100.0 / result.totalMarks) : 0} + '%'">
+                            </div>
+                        </div>
+
+                        <!-- Pass / Fail Badge -->
+                        <div class="my-3">
+                            <span class="badge fs-6 px-4 py-2"
+                                  th:classappend="${result.totalMarks > 0 && result.totalScore * 100 / result.totalMarks >= 50 ? 'bg-success' : 'bg-danger'}"
+                                  th:text="${result.totalMarks > 0 && result.totalScore * 100 / result.totalMarks >= 50 ? '✅ PASSED' : '❌ FAILED'}">
+                            </span>
+                        </div>
+
+                        <hr>
+
+                        <!-- Details Table -->
+                        <div class="text-start px-3">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Name</th>
+                                    <td th:text="${result.name}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Test Name</th>
+                                    <td th:text="${result.testName}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Total Questions</th>
+                                    <td th:text="${result.totalMarks}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Correct Answers</th>
+                                    <td th:text="${result.totalScore}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Percentage</th>
+                                    <td th:text="${T(java.lang.Math).round(result.totalScore * 100.0 / result.totalMarks)} + '%'"></td>
+                                </tr>
+                                <tr>
+                                    <th>Submitted At</th>
+                                    <td th:text="${#temporals.format(result.submittedAt, 'dd MMM yyyy, hh:mm a')}"></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-center gap-3 mt-4">
+                            <a href="/Student/Dashboard" class="btn btn-outline-primary px-4">
+                                <i class="bi bi-house-fill"></i> Dashboard
+                            </a>
+                            <a href="/Student/SeeResult" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-bar-chart-line"></i> All Results
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fallback if no result (direct access) -->
+                <div class="card shadow border-0 text-center py-5" th:if="${result == null}">
+                    <div class="card-body">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                        <h3 class="mt-3">Test Submitted!</h3>
+                        <p class="text-muted">Your test has been submitted successfully. Check your results below.</p>
+                        <a href="/Student/SeeResult" class="btn btn-primary mt-2">View My Results</a>
+                        <a href="/Student/Dashboard" class="btn btn-outline-secondary mt-2 ms-2">Go to Dashboard</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</body>
+</html>

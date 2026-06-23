@@ -1,0 +1,71 @@
+<html th:replace="~{Admin/adminbase::layout(~{::main})}">
+<body>
+<main>
+  <div class="container py-4">
+
+    <h3 class="fw-bold mb-4">
+      📄 Manage PDF Materials
+    </h3>
+
+    <div th:if="${pdfMaterials.isEmpty()}" class="alert alert-info">
+      No PDF materials uploaded yet.
+    </div>
+
+    <div class="table-responsive" th:if="${!pdfMaterials.isEmpty()}">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Course</th>
+            <th>Branch</th>
+            <th>Year</th>
+            <th>Views</th>
+            <th>Visibility</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="pdf, stat : ${pdfMaterials}">
+            <td th:text="${stat.count}"></td>
+            <td th:text="${pdf.title}"></td>
+            <td th:text="${pdf.course}"></td>
+            <td th:text="${pdf.branch}"></td>
+            <td th:text="${pdf.year}"></td>
+            <td th:text="${pdf.viewCount}"></td>
+
+            <td>
+              <span
+                class="badge"
+                th:text="${pdf.isVisible}"
+                th:classappend="${pdf.isVisible.name() == 'Visible'} 
+                  ? 'bg-success' : 'bg-secondary'">
+              </span>
+            </td>
+
+            <td class="text-nowrap">
+              <a th:href="${pdf.fileUrl}" target="_blank"
+                 class="btn btn-sm btn-primary">
+                View
+              </a>
+
+              <a th:href="@{/Admin/ToggleMaterialVisibility(id=${pdf.id})}"
+                 class="btn btn-sm btn-warning">
+                Toggle
+              </a>
+
+              <a th:href="@{/Admin/DeleteMaterial(id=${pdf.id})}"
+                 class="btn btn-sm btn-danger"
+                 onclick="return confirm('Delete this PDF?')">
+                Delete
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</main>
+</body>
+</html>

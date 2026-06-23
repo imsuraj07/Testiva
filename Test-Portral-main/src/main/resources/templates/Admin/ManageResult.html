@@ -1,0 +1,69 @@
+<html  th:replace="~{Admin/Adminbase::layout(~{::main})}">
+<body>
+<main class="container">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white text-center py-3">
+            <h4>Manage Test Results</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="myTable" class="table table-bordered table-hover mt-2">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Student Name</th>
+                            <th>Email</th>
+                            <th>Contact No</th>
+                            <th>Course</th>
+                            <th>Branch</th>
+                            <th>Year</th>
+                            <th>Test ID</th>
+                            <th>Test Name</th>
+                            <th>Score</th>
+                            <th>Submitted At</th>
+                            <th>Performance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="result, iter : ${testResults}">
+                            <td th:text="${iter.index + 1}">1</td>
+                            <td th:text="${result.name}">John Doe</td>
+                            <td th:text="${result.email}">john@example.com</td>
+                            <td th:text="${result.contactno}">9876543210</td>
+                            <td th:text="${result.course}">BCA</td>
+                            <td th:text="${result.branch}">IT</td>
+                            <td th:text="${result.year}">3rd</td>
+                            <td th:text="${result.testId}">TTP001</td>
+                            <td th:text="${result.testName}">Mock Test</td>
+                            <td>
+                                <span th:text="${result.totalScore} + ' / ' + ${result.totalMarks}">40 / 50</span>
+                            </td>
+                            <td th:text="${result.submittedAt != null ? #temporals.format(result.submittedAt, 'dd-MM-yyyy HH:mm') : 'N/A'}">28-06-2025 14:45</td>
+                            <td>
+                                <div class="progress rounded-5" style="height: 15px; font-size: 8px;">
+                                    <div class="progress-bar border p-1 rounded-5 text-dark" role="progressbar"
+                                         th:style="'width:' + (${result.totalMarks > 0 ? (result.totalScore * 100 / result.totalMarks) : 0}) + '%'"
+                                         th:classappend="${result.totalMarks > 0 ? ((result.totalScore * 100 / result.totalMarks) >= 75 ? ' bg-success' : 
+                                                         (result.totalScore * 100 / result.totalMarks) >= 50 ? ' bg-warning text-dark' : 
+                                                                                                               ' bg-danger') : ' bg-danger'}"
+                                         th:text="${result.totalMarks > 0 ? T(java.lang.Math).round(result.totalScore * 100.0 / result.totalMarks) : 0} + '%'">
+                                        80%
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        th, td {
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+    </style>
+</main>
+</body>
+</html>
